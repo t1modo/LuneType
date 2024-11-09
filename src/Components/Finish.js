@@ -9,7 +9,7 @@ const Finish = () => {
     const location = useLocation();
 
     const { asteroidsDestroyed, difficulty } = location.state || { asteroidsDestroyed: 0, difficulty: 'EASY' };
-    const [highestScore, setHighestScore] = useState(null);
+    const [highestScore, setHighestScore] = useState(null); // Initial state as null to track loading properly
     const [loadingScore, setLoadingScore] = useState(true);
     const [showLeaderboard, setShowLeaderboard] = useState(false);
     const [leaderboardData, setLeaderboardData] = useState([]);
@@ -17,8 +17,9 @@ const Finish = () => {
 
     useEffect(() => {
         const fetchAndUpdateHighestScore = async () => {
-            setLoadingScore(true); // Start loading state
+            setLoadingScore(true);
             const user = auth.currentUser;
+
             if (!user) {
                 setLoadingScore(false);
                 return;
@@ -27,23 +28,24 @@ const Finish = () => {
             try {
                 const userRef = doc(db, "users", user.uid);
                 const userDoc = await getDoc(userRef);
-
-                let currentHighestScore = parseInt(localStorage.getItem("highestScore")) || 0;
+                let updatedHighestScore = parseInt(localStorage.getItem("highestScore")) || 0;
 
                 if (userDoc.exists()) {
-                    const userData = userDoc.data();
-                    currentHighestScore = userData.highestScore || 0;
+                    const firestoreHighScore = userDoc.data().highestScore || 0;
 
-                    // Update high score if it's HARD mode and score is higher
-                    if (difficulty === 'HARD' && asteroidsDestroyed > currentHighestScore) {
+                    // Check if a new high score is achieved
+                    if (difficulty === 'HARD' && asteroidsDestroyed > firestoreHighScore) {
+                        updatedHighestScore = asteroidsDestroyed; // Set to new high score
                         await updateDoc(userRef, { highestScore: asteroidsDestroyed });
-                        setHighestScore(asteroidsDestroyed);
-                        localStorage.setItem("highestScore", asteroidsDestroyed); // Set in localStorage
                     } else {
-                        setHighestScore(currentHighestScore);
+                        updatedHighestScore = firestoreHighScore;
                     }
+
+                    // Set the highest score state and local storage after the update
+                    setHighestScore(updatedHighestScore);
+                    localStorage.setItem("highestScore", updatedHighestScore);
                 } else {
-                    // Initialize new user data in Firestore
+                    // First-time user setup in Firestore and localStorage
                     await setDoc(userRef, { highestScore: asteroidsDestroyed });
                     setHighestScore(asteroidsDestroyed);
                     localStorage.setItem("highestScore", asteroidsDestroyed);
@@ -55,14 +57,9 @@ const Finish = () => {
             }
         };
 
-        fetchAndUpdateHighestScore();
+        // Adding a slight delay to ensure Firebase updates propagate
+        setTimeout(fetchAndUpdateHighestScore, 300);
     }, [asteroidsDestroyed, difficulty]);
-
-    useEffect(() => {
-        // Retrieve highestScore from localStorage on component load
-        const savedHighestScore = parseInt(localStorage.getItem("highestScore")) || 0;
-        setHighestScore(savedHighestScore);
-    }, []);
 
     const handlePlayAgain = async () => {
         const user = auth.currentUser;
@@ -125,10 +122,9 @@ const Finish = () => {
                 Highest Score: {loadingScore ? (
                     <span className="loading-indicator">Loading...</span>
                 ) : (
-                    ` ${highestScore}` // Add a space before highestScore here
+                    ` ${highestScore}`
                 )}
             </p>
-
 
             <button className="leaderboard-button" onClick={toggleLeaderboardModal}>
                 LEADERBOARD
