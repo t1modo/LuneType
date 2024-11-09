@@ -205,7 +205,7 @@ const Play = () => {
             style={{ left: asteroid.x, top: asteroid.y, width: asteroid.size, height: asteroid.size }}
           >
             <img
-              src="/images/asteroid.webp"
+              src="/Images/asteroid.webp"
               alt="Asteroid"
               className="asteroid-image"
               style={{ width: '100%', height: '100%' }}
