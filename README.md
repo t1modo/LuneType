@@ -27,9 +27,3 @@ LuneType is a space-themed typing practice game designed to improve typing skill
 - **JavaScript**: Handles game mechanics, word generation, and user input within the React framework.
 - **CSS**: Styles the game layout and enhances the space-themed interface.
 - **Firebase**: Used as the backend database for managing user accounts and high score tracking.
-
-## Installation
-
-1. Clone this repository:
-   ```bash
-   git clone https://github.com/Kronomancer/DeAnzaHacks2024.git
