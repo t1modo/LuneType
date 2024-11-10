@@ -165,9 +165,9 @@ const Play = () => {
         'PageUp',
         'PageDown',
       ];
-
+  
       if (ignoredKeys.includes(key)) return;
-
+  
       if (key === 'Enter') {
         if (typedText === activeWord) {
           setAsteroids((prevAsteroids) =>
@@ -179,7 +179,10 @@ const Play = () => {
       } else if (key === 'Backspace') {
         setTypedText((prev) => prev.slice(0, -1));
       } else {
-        setTypedText((prev) => prev + key);
+        // Only add characters if typedText is shorter than activeWord's length
+        if (typedText.length < activeWord.length) {
+          setTypedText((prev) => prev + key);
+        }
       }
     },
     [typedText, activeWord]
