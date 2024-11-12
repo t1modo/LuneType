@@ -23,7 +23,6 @@ LuneType is a space-themed typing practice game designed to improve typing skill
 
 ## Technologies Used
 
-- **React**: The main framework for building the game's components and managing the game state.
-- **JavaScript**: Handles game mechanics, word generation, and user input within the React framework.
+- **React**: The primary JavaScript library used for building the user interface, including individual game components and managing the component state of the game.
 - **CSS**: Styles the game layout and enhances the space-themed interface.
 - **Firebase**: Used as the backend database for managing user accounts and high score tracking.
